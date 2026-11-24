@@ -1,18 +1,19 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import PrimeVue from 'primevue/config'
-import Aura from '@primeuix/themes/aura'
-import 'primeicons/primeicons.css'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import PrimeVue from 'primevue/config';
+import Aura from '@primeuix/themes/aura';
+import 'primeicons/primeicons.css';
+import './assets/styles/main.css';
 
-import App from './App.vue'
-import router from './router'
-import { useTenantStore } from './stores/tenant'
+import App from './App.vue';
+import router from './router/router.js';
+import { useTenantStore } from './stores/tenant';
 
-const app = createApp(App)
-const pinia = createPinia()
+const app = createApp(App);
+const pinia = createPinia();
 
-app.use(pinia)
-app.use(router)
+app.use(pinia);
+app.use(router);
 app.use(PrimeVue, {
     theme: {
         preset: Aura,
@@ -20,9 +21,9 @@ app.use(PrimeVue, {
             darkModeSelector: '.my-app-dark'
         }
     }
-})
+});
 
-const tenantStore = useTenantStore(pinia)
-tenantStore.applyTenantTheme()
+const tenantStore = useTenantStore(pinia);
+tenantStore.applyTenantTheme();
 
-app.mount('#app')
+app.mount('#app');

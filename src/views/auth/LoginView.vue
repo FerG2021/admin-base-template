@@ -1,57 +1,3 @@
-<script>
-import { mapActions, mapState } from 'pinia'
-import Card from 'primevue/card'
-import InputText from 'primevue/inputtext'
-import Password from 'primevue/password'
-import Button from 'primevue/button'
-import Message from 'primevue/message'
-import { useAuthStore } from '@/stores/auth'
-import { useTenantStore } from '@/stores/tenant'
-
-export default {
-    name: 'LoginView',
-    components: {
-        PrimeCard: Card,
-        InputText,
-        Password,
-        PrimeButton: Button,
-        Message
-    },
-    data() {
-        return {
-            form: {
-                username: '',
-                password: ''
-            },
-            loading: false,
-            errorMsg: ''
-        }
-    },
-    computed: {
-        ...mapState(useTenantStore, ['navigationItems'])
-    },
-    methods: {
-        ...mapActions(useAuthStore, ['login']),
-        ...mapActions(useTenantStore, ['loadAccountConfig']),
-        async handleLogin() {
-            this.loading = true
-            this.errorMsg = ''
-            try {
-                const response = await this.login(this.form)
-                this.loadAccountConfig(response.account_key)
-
-                const firstRoute = this.navigationItems[0]?.routeName || 'example-list'
-                this.$router.push({ name: firstRoute })
-            } catch (err) {
-                this.errorMsg = err.response?.data?.message || 'Credenciales inválidas'
-            } finally {
-                this.loading = false
-            }
-        }
-    }
-}
-</script>
-
 <template>
     <PrimeCard>
         <template #title>Iniciar sesión</template>
@@ -63,7 +9,7 @@ export default {
                         id="username"
                         v-model="form.username"
                         type="text"
-                        placeholder="ej. admin.empresa1"
+                        placeholder="ej. admin.arka"
                         fluid
                         required
                     />
@@ -87,6 +33,56 @@ export default {
         </template>
     </PrimeCard>
 </template>
+
+<script>
+import { mapActions } from 'pinia';
+import Card from 'primevue/card';
+import InputText from 'primevue/inputtext';
+import Password from 'primevue/password';
+import Button from 'primevue/button';
+import Message from 'primevue/message';
+import { useAuthStore } from '@/stores/auth';
+import { useTenantStore } from '@/stores/tenant';
+
+export default {
+    name: 'LoginView',
+    components: {
+        PrimeCard: Card,
+        InputText,
+        Password,
+        PrimeButton: Button,
+        Message
+    },
+    data() {
+        return {
+            form: {
+                username: '',
+                password: ''
+            },
+            loading: false,
+            errorMsg: ''
+        };
+    },
+    methods: {
+        ...mapActions(useAuthStore, ['login']),
+        ...mapActions(useTenantStore, ['loadAccountConfig']),
+        async handleLogin() {
+            this.loading = true;
+            this.errorMsg = '';
+            try {
+                const response = await this.login(this.form);
+                this.loadAccountConfig(response.account_key);
+                this.$router.push({ name: useTenantStore().defaultRouteName });
+            } catch (err) {
+                this.errorMsg =
+                    err.response?.data?.message || err.message || 'Credenciales inválidas';
+            } finally {
+                this.loading = false;
+            }
+        }
+    }
+};
+</script>
 
 <style scoped>
 .login-form {

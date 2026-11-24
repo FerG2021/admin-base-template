@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { getAllModuleRoutes } from '@/config/modules.config';
+import { getAllModuleRoutes } from '@/modules/modules.js';
+import { useTenantStore } from '@/stores/tenant';
 import { setupRouterGuards } from './guards';
 
 import AuthLayout from '@/layouts/AuthLayout.vue';
@@ -27,7 +28,7 @@ const router = createRouter({
             children: [
                 {
                     path: '',
-                    redirect: { name: 'example-list' }
+                    redirect: () => ({ name: useTenantStore().defaultRouteName })
                 },
                 ...getAllModuleRoutes()
             ]
